@@ -1,0 +1,28 @@
+/* app/styles/custom.css */
+
+/* Swiperカルーセル用カスタムスタイル */
+.custom-carousel {
+    @apply rounded-lg shadow-lg overflow-hidden;
+  }
+  
+  .custom-carousel img {
+    @apply w-full h-64 object-cover;
+  }
+  
+  .custom-carousel .overlay {
+    @apply absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center p-4;
+  }
+  
+  .custom-carousel .overlay h3 {
+    @apply text-white text-2xl font-bold;
+  }
+  
+  .custom-carousel .overlay p {
+    @apply text-white text-sm mt-2;
+  }
+  
+  /* ジョブリストカード */
+  .job-card {
+    @apply transform transition hover:scale-105 shadow-lg bg-white rounded-lg p-6;
+  }
+  

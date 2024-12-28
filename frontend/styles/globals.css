@@ -1,0 +1,7 @@
+/* frontend/styles/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 他のグローバルスタイルをここに追加 */
