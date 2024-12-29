@@ -1,7 +1,8 @@
 /////////////////////////////////////////////
-// frontend/app/admin/login/page.tsx
+// frontend/app/admin/login/page.tsx (修正版)
 /////////////////////////////////////////////
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -28,7 +29,10 @@ export default function AdminLoginPage() {
       }
 
       // 成功 → tokenをlocalStorageへ
-      localStorage.setItem("adminToken", data.token);
+      localStorage.setItem("adminToken", data.token || "");
+
+      // 名前が返ってきたら保存。無い場合は "管理者" 固定
+      localStorage.setItem("adminName", data.name || "管理者");
 
       // roleがadminかどうかチェックし、adminならダッシュボード
       if (data.role === "admin") {
