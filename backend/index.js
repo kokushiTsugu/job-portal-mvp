@@ -28,19 +28,34 @@ const PORT = process.env.PORT || 8080;
 const adminRoutes = require('./routes/adminRoutes');
 
 // ====== CORS設定 ======
-// Block all CORS requests by default
+// CORS configuration to allow Vercel frontend and local development
+const allowedOrigins = [
+  'https://job-portal-mvp-git-main-kokushitsugus-projects.vercel.app',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: false, // This blocks all CORS requests
+  origin: function (origin, callback) {
+    // Allow direct API access (no origin)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is allowed
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error('CORS not allowed for this origin'), false);
+    }
+    return callback(null, true);
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 // Error handler for CORS violations
 app.use((err, req, res, next) => {
-  if (err.name === 'CORSError') {
+  if (err.message === 'CORS not allowed for this origin') {
     return res.status(403).json({ 
       error: 'CORS Error', 
-      message: 'Direct API access only. Cross-origin requests are not allowed.' 
+      message: 'Access not allowed from this origin' 
     });
   }
   next(err);
@@ -49,13 +64,8 @@ app.use((err, req, res, next) => {
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Preflight - Block all preflight requests
-app.options('*', (req, res) => {
-  res.status(403).json({ 
-    error: 'CORS Error', 
-    message: 'Direct API access only. Cross-origin requests are not allowed.' 
-  });
-});
+// Handle preflight requests
+app.options('*', cors());
 
 // ====== Connect to Mongo ======
 const connectDB = async () => {
