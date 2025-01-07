@@ -24,7 +24,12 @@ export default function Login() {
     try {
       const response = await fetch(getApiUrl("login"), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: 'cors',
+        credentials: 'include',
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({ email: formData.email, password: formData.password }),
       });
 

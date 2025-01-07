@@ -31,6 +31,7 @@ const adminRoutes = require('./routes/adminRoutes');
 // CORS configuration to allow Vercel frontend and local development
 const allowedOrigins = [
   'https://job-portal-mvp-git-main-kokushitsugus-projects.vercel.app',
+  'https://job-portal-mvp.vercel.app',
   'http://localhost:3000'
 ];
 

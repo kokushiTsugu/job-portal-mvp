@@ -23,7 +23,14 @@ export default function JobsPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch(getApiUrl("jobs"));
+        const res = await fetch(getApiUrl("jobs"), {
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        });
         if (!res.ok) throw new Error("Jobs fetch failed");
         const data = await res.json();
         const fetchedJobs: Job[] = data.jobs || [];

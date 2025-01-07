@@ -18,7 +18,14 @@ export default function InterviewListPage() {
   useEffect(() => {
     const fetchInterviews = async () => {
       try {
-        const response = await fetch(getApiUrl("interviews"));
+        const response = await fetch(getApiUrl("interviews"), {
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        });
         if (!response.ok) throw new Error("インタビュー一覧の取得に失敗");
         const data = await response.json();
         setInterviews(data.interviews);

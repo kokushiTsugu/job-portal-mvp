@@ -29,7 +29,14 @@ export default function InterviewDetailPage() {
   useEffect(() => {
     const fetchInterview = async () => {
       try {
-        const res = await fetch(getApiUrl(`interviews/${id}`));
+        const res = await fetch(getApiUrl(`interviews/${id}`), {
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        });
         if (!res.ok) {
           throw new Error("インタビュー詳細の取得に失敗しました");
         }

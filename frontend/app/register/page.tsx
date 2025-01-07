@@ -4,6 +4,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
+import { getApiUrl } from "@/lib/config";
 import Link from 'next/link';
 
 export default function Register() {
@@ -26,9 +27,14 @@ export default function Register() {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:8080/register", {
+      const response = await fetch(getApiUrl("register"), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: 'cors',
+        credentials: 'include',
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify(formData),
       });
 
