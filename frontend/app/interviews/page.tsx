@@ -2,16 +2,23 @@
 
 import React, { useEffect, useState } from "react";
 import InterviewCard from "../components/InterviewCard";
+import { getApiUrl } from "@/lib/config";
+
+interface Interview {
+  _id: string;
+  title: string;
+  // Add other interview properties as needed
+}
 
 export default function InterviewListPage() {
-  const [interviews, setInterviews] = useState([]);
+  const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchInterviews = async () => {
       try {
-        const response = await fetch("http://localhost:8080/interviews");
+        const response = await fetch(getApiUrl("interviews"));
         if (!response.ok) throw new Error("インタビュー一覧の取得に失敗");
         const data = await response.json();
         setInterviews(data.interviews);

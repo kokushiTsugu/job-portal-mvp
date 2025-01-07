@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { getApiUrl } from "@/lib/config";
 
 interface Interview {
   _id: string;
@@ -28,7 +29,7 @@ export default function InterviewDetailPage() {
   useEffect(() => {
     const fetchInterview = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/interviews/${id}`);
+        const res = await fetch(getApiUrl(`interviews/${id}`));
         if (!res.ok) {
           throw new Error("インタビュー詳細の取得に失敗しました");
         }

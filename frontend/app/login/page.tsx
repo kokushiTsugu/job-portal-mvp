@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getApiUrl } from "@/lib/config";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -21,7 +22,7 @@ export default function Login() {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch(getApiUrl("login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, password: formData.password }),
