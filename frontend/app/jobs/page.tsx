@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { getApiUrl } from "@/lib/config";
 
 interface Job {
   _id: string;
@@ -22,7 +23,7 @@ export default function JobsPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch("http://localhost:8080/jobs");
+        const res = await fetch(getApiUrl("jobs"));
         if (!res.ok) throw new Error("Jobs fetch failed");
         const data = await res.json();
         const fetchedJobs: Job[] = data.jobs || [];
