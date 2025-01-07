@@ -28,22 +28,33 @@ const PORT = process.env.PORT || 8080;
 const adminRoutes = require('./routes/adminRoutes');
 
 // ====== CORS設定 ======
+// Block all CORS requests by default
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true,
+  origin: false, // This blocks all CORS requests
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+// Error handler for CORS violations
+app.use((err, req, res, next) => {
+  if (err.name === 'CORSError') {
+    return res.status(403).json({ 
+      error: 'CORS Error', 
+      message: 'Direct API access only. Cross-origin requests are not allowed.' 
+    });
+  }
+  next(err);
+});
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Preflight
+// Preflight - Block all preflight requests
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:3000');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  return res.sendStatus(200);
+  res.status(403).json({ 
+    error: 'CORS Error', 
+    message: 'Direct API access only. Cross-origin requests are not allowed.' 
+  });
 });
 
 // ====== Connect to Mongo ======
