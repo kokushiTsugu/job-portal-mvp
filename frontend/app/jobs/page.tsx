@@ -23,7 +23,11 @@ export default function JobsPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch(getApiUrl("jobs"), {
+        const apiUrl = getApiUrl("jobs");
+        console.log('Attempting to fetch jobs from:', apiUrl);
+        console.log('Environment API_URL:', process.env.NEXT_PUBLIC_API_URL);
+        
+        const res = await fetch(apiUrl, {
           mode: 'cors',
           credentials: 'include',
           headers: {
