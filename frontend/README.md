@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+This project serves as the frontend for our Job Portal MVP, providing a modern and responsive user interface for job seekers and employers.
+
 ## Getting Started
 
 First, run the development server:
