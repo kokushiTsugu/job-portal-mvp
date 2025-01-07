@@ -29,7 +29,7 @@ const adminRoutes = require('./routes/adminRoutes');
 
 // ====== CORS設定 ======
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -39,7 +39,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Preflight
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:3000');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -47,12 +47,19 @@ app.options('*', (req, res) => {
 });
 
 // ====== Connect to Mongo ======
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDBに接続しました'))
-  .catch(err => {
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('MongoDBに接続しました');
+  } catch (err) {
     console.error('MongoDB接続エラー:', err);
-    process.exit(1);
-  });
+    // Retry connection after 5 seconds
+    console.log('5秒後に再接続を試みます...');
+    setTimeout(connectDB, 5000);
+  }
+};
+
+connectDB();
 
 // ====== Auth Middleware ======
 const authenticateUser = (req, res, next) => {
@@ -80,9 +87,17 @@ const authenticateAdmin = (req, res, next) => {
 };
 
 // ====== Multer Setup ======
+const uploadDir = process.env.UPLOAD_DIR || 'uploads/resumes/';
+
+// Ensure upload directory exists
+const fs = require('fs');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/resumes/');
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
