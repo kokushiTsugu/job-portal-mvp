@@ -28,31 +28,59 @@ const PORT = process.env.PORT || 8080;
 const adminRoutes = require('./routes/adminRoutes');
 
 // ====== CORS設定 ======
+// CORS configuration to allow Vercel frontend and local development
+const allowedOrigins = [
+  'https://job-portal-mvp-git-main-kokushitsugus-projects.vercel.app',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
+  origin: function (origin, callback) {
+    // Allow direct API access (no origin)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is allowed
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error('CORS not allowed for this origin'), false);
+    }
+    return callback(null, true);
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
+
+// Error handler for CORS violations
+app.use((err, req, res, next) => {
+  if (err.message === 'CORS not allowed for this origin') {
+    return res.status(403).json({ 
+      error: 'CORS Error', 
+      message: 'Access not allowed from this origin' 
+    });
+  }
+  next(err);
+});
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Preflight
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  return res.sendStatus(200);
-});
+// Handle preflight requests
+app.options('*', cors());
 
 // ====== Connect to Mongo ======
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDBに接続しました'))
-  .catch(err => {
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('MongoDBに接続しました');
+  } catch (err) {
     console.error('MongoDB接続エラー:', err);
-    process.exit(1);
-  });
+    // Retry connection after 5 seconds
+    console.log('5秒後に再接続を試みます...');
+    setTimeout(connectDB, 5000);
+  }
+};
+
+connectDB();
 
 // ====== Auth Middleware ======
 const authenticateUser = (req, res, next) => {
@@ -80,9 +108,17 @@ const authenticateAdmin = (req, res, next) => {
 };
 
 // ====== Multer Setup ======
+const uploadDir = process.env.UPLOAD_DIR || 'uploads/resumes/';
+
+// Ensure upload directory exists
+const fs = require('fs');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/resumes/');
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
