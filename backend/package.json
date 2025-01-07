@@ -1,7 +1,10 @@
 {
-  "name": "backend",
+  "name": "job-portal-backend",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
