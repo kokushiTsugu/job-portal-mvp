@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import { getApiUrl } from "@/lib/config";
 
 interface User {
   name: string;
@@ -70,7 +71,7 @@ export default function ProfileEditPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/user", {
+      const response = await fetch(getApiUrl("user"), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

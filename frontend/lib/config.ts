@@ -1,5 +1,5 @@
 // Environment variable configuration
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+export const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
 
 // Helper function to construct API URLs
 export const getApiUrl = (path: string) => {

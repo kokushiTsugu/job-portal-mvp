@@ -4,6 +4,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getApiUrl } from "@/lib/config";
 
 export default function AdminRegisterPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ export default function AdminRegisterPage() {
     setMsg("");
 
     try {
-      const res = await fetch("http://localhost:8080/admin/register", {
+      const res = await fetch(getApiUrl("admin/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name }),

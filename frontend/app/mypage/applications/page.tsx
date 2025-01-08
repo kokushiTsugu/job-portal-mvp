@@ -4,6 +4,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getApiUrl } from "@/lib/config";
 
 interface Application {
   _id: string;
@@ -20,7 +21,7 @@ export default function ApplicationsPage() {
 
     (async () => {
       try {
-        const res = await fetch("http://localhost:8080/applications", {
+        const res = await fetch(getApiUrl("applications"), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) {

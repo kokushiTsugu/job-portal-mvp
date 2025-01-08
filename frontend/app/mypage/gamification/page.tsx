@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { getApiUrl } from "@/lib/config";
 
 interface UserInfo {
   onChainLevel: number;
@@ -18,7 +19,7 @@ export default function GamificationMainPage() {
     if (!token) return; // 未ログインなら0のまま
     (async () => {
       try {
-        const res = await fetch("http://localhost:8080/user/me", {
+        const res = await fetch(getApiUrl("user/me"), {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) return; // 失敗時そのまま

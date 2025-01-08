@@ -4,6 +4,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getApiUrl } from "@/lib/config";
 
 export default function MyPage() {
   const [userName, setUserName] = useState("");
@@ -19,7 +20,7 @@ export default function MyPage() {
 
     (async () => {
       try {
-        const res = await fetch("http://localhost:8080/user/me", {
+        const res = await fetch(getApiUrl("user/me"), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) {

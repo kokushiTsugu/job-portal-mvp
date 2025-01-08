@@ -6,6 +6,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ethers } from "ethers";
+import { getApiUrl } from "@/lib/config";
 
 export default function IntroL1Page() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function IntroL1Page() {
       setAddress(addr);
 
       // request-challenge
-      const challengeRes = await fetch("http://localhost:8080/web3/request-challenge", {
+      const challengeRes = await fetch(getApiUrl("web3/request-challenge"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!challengeRes.ok) {
@@ -43,7 +44,7 @@ export default function IntroL1Page() {
       const signature = await signer.signMessage(challenge);
 
       // verify
-      const verifyRes = await fetch("http://localhost:8080/web3/verify", {
+      const verifyRes = await fetch(getApiUrl("web3/verify"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

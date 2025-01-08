@@ -4,6 +4,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getApiUrl } from "@/lib/config";
 
 interface Job {
   _id: string;
@@ -33,7 +34,7 @@ export default function AdminJobsPage() {
         router.replace("/admin/login");
         return;
       }
-      const res = await fetch("http://localhost:8080/admin/jobs", {
+      const res = await fetch(getApiUrl("admin/jobs"), {
         headers: { Authorization: `Bearer ${adminToken}` },
       });
       if (!res.ok) {
@@ -59,7 +60,7 @@ export default function AdminJobsPage() {
       const adminToken = localStorage.getItem("adminToken");
       if (!adminToken) return;
 
-      const res = await fetch("http://localhost:8080/admin/jobs", {
+      const res = await fetch(getApiUrl("admin/jobs"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +101,7 @@ export default function AdminJobsPage() {
       const adminToken = localStorage.getItem("adminToken");
       if (!adminToken) return;
 
-      const res = await fetch(`http://localhost:8080/admin/jobs/${jobId}`, {
+      const res = await fetch(getApiUrl(`admin/jobs/${jobId}`), {
         method: "DELETE",
         headers: { Authorization: `Bearer ${adminToken}` },
       });

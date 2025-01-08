@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { getApiUrl } from "@/lib/config";
 
 export default function UserProfile() {
   const [formData, setFormData] = useState({ name: '', email: '', resume: null });
@@ -22,7 +23,7 @@ export default function UserProfile() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/upload-resume', {
+      const response = await fetch(getApiUrl('upload-resume'), {
         method: 'POST',
         body: uploadData,
       });

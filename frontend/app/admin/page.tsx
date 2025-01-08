@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getApiUrl } from "@/lib/config";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function AdminLoginPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/admin/login", {
+      const res = await fetch(getApiUrl("admin/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })

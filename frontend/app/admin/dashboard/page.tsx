@@ -4,6 +4,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getApiUrl } from "@/lib/config";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function AdminDashboardPage() {
       return;
     }
 
-    fetch("http://localhost:8080/admin/stats", {
+    fetch(getApiUrl("admin/stats"), {
       headers: { Authorization: `Bearer ${adminToken}` }
     })
       .then((res) => {
