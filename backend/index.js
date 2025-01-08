@@ -27,6 +27,27 @@ const PORT = process.env.PORT || 8080;
 // ---- 追加: adminRoutes ----
 const adminRoutes = require('./routes/adminRoutes');
 
+// ====== Basic Auth for Tunnel Service ======
+const basicAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith('Basic ')) {
+    const base64Credentials = authHeader.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const [username, password] = credentials.split(':');
+
+    if (username === 'kokushiTsugu' && password === 'test123') {
+      return next();
+    }
+  }
+
+  res.set('WWW-Authenticate', 'Basic realm="Restricted"');
+  return res.status(401).json({ message: 'Authentication required' });
+};
+
+// Apply Basic Auth before CORS
+app.use(basicAuth);
+
 // ====== CORS設定 ======
 // CORS configuration to allow Vercel frontend and local development
 const allowedOrigins = [
