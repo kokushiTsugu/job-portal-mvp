@@ -29,20 +29,30 @@ const adminRoutes = require('./routes/adminRoutes');
 
 // ====== Basic Auth for Tunnel Service ======
 const basicAuth = (req, res, next) => {
+  console.log('Basic Auth Middleware - Request Headers:', req.headers);
   const authHeader = req.headers.authorization;
 
   if (authHeader && authHeader.startsWith('Basic ')) {
     const base64Credentials = authHeader.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [username, password] = credentials.split(':');
+    
+    console.log('Basic Auth Middleware - Attempting authentication for:', username);
 
     if (username === 'kokushiTsugu' && password === 'test123') {
+      console.log('Basic Auth Middleware - Authentication successful');
       return next();
     }
+    console.log('Basic Auth Middleware - Invalid credentials');
+  } else {
+    console.log('Basic Auth Middleware - No authorization header or wrong format');
   }
 
   res.set('WWW-Authenticate', 'Basic realm="Restricted"');
-  return res.status(401).json({ message: 'Authentication required' });
+  return res.status(401).json({ 
+    message: 'Authentication required',
+    error: 'Invalid credentials or missing authorization header'
+  });
 };
 
 // Apply Basic Auth before CORS
