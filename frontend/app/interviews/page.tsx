@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import InterviewCard from "../components/InterviewCard";
-import { getApiUrl } from "@/lib/config";
+import { getApiUrl, getFetchOptions } from "@/lib/config";
 
 interface Interview {
   _id: string;
@@ -18,14 +18,7 @@ export default function InterviewListPage() {
   useEffect(() => {
     const fetchInterviews = async () => {
       try {
-        const response = await fetch(getApiUrl("interviews"), {
-          mode: 'cors',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-        });
+        const response = await fetch(getApiUrl("interviews"), getFetchOptions());
         if (!response.ok) throw new Error("インタビュー一覧の取得に失敗");
         const data = await response.json();
         setInterviews(data.interviews);

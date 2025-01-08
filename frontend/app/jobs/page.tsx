@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { getApiUrl } from "@/lib/config";
+import { getApiUrl, getFetchOptions } from "@/lib/config";
 
 interface Job {
   _id: string;
@@ -27,15 +27,17 @@ export default function JobsPage() {
         console.log('Attempting to fetch jobs from:', apiUrl);
         console.log('Environment API_URL:', process.env.NEXT_PUBLIC_API_URL);
         
-        const res = await fetch(apiUrl, {
-          mode: 'cors',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+        console.log('Using Basic Auth credentials:', {
+          username: 'kokushiTsugu',
+          password: 'test123'
         });
-        if (!res.ok) throw new Error("Jobs fetch failed");
+        const res = await fetch(apiUrl, getFetchOptions());
+        if (!res.ok) {
+          console.error('Jobs fetch failed with status:', res.status);
+          const errorText = await res.text();
+          console.error('Error response:', errorText);
+          throw new Error("Jobs fetch failed");
+        }
         const data = await res.json();
         const fetchedJobs: Job[] = data.jobs || [];
         setJobs(fetchedJobs);

@@ -5,7 +5,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getApiUrl } from "@/lib/config";
+import { getApiUrl, getFetchOptions } from "@/lib/config";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -22,16 +22,10 @@ export default function Login() {
     setMessage("");
 
     try {
-      const response = await fetch(getApiUrl("login"), {
+      const response = await fetch(getApiUrl("login"), getFetchOptions({
         method: "POST",
-        mode: 'cors',
-        credentials: 'include',
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ email: formData.email, password: formData.password }),
-      });
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      }));
 
       const data = await response.json();
       console.log("Login response:", data); // デバッグ用
